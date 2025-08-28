@@ -1,24 +1,21 @@
 import { PlateauRoversParserUseCase } from "./app/use-cases/plateau-rovers-parser-use-case";
-
-const input = `
-5 5
-1 2 N
-LMLMLMLMM 
-3 3 E
-MMRMMRMRRM
-`
+import { FileReader } from "./infra/file-reader";
 
 function main() {
   try {
+    const input = FileReader.readFile('input/example.txt');
+
     const parser = new PlateauRoversParserUseCase();
     const { plateau } = parser.parse(input);
 
+    // Display results
     console.log(`Plateau: ${plateau.maxX} ${plateau.maxY}`);
     for (const rover of plateau.rovers) {
       console.log(`Rover ${rover.id} position: ${rover.position.x} ${rover.position.y} ${rover.direction}`);
     }
   } catch (error: any) {
-    console.log(`${error?.name || 'Error'}: ${error?.message || 'Unknown error'}`)
+    console.error(`${error?.name || 'Error'}: ${error?.message || 'Unknown error'}`);
+    process.exit(1);
   }
 }
 
