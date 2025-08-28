@@ -3,10 +3,11 @@
 ## Todo List
 
 - [x] **1. Domain entity for rover with basic movement actions**
-- [ ] **2. Service parser that reads a string and parses it into commands and returns an array of rovers**
-- [ ] **3. Domain entity for the plateau with bounding box verification**
-  - [ ] Bounding box
-  - [ ] Other rovers (extra)
+- [x] **2. Domain entity for the plateau with bounding box verification**
+  - [x] Check initial positions inside plateau
+  - [x] Bounding box
+  - [x] Other rovers (extra)
+- [ ] **3. Service parser that reads a string and parses it into commands and returns a plateau with rovers**
 - [ ] **4. Infrastructure layer that reads a file and maps to rovers**
 - [ ] **5. Docker Build**
 - [ ] **6. Documentation**

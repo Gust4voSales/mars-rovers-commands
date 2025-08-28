@@ -1,5 +1,8 @@
 import { Position } from "./types";
 import { BaseEntity } from "./base-entity";
+import { Plateau } from "./plateau";
+import { InvalidCommandError } from "./errors/invalid-command";
+import { InvalidInitializationError } from "./errors/invalid-initialization";
 
 enum Direction {
   NORTH = "N",
@@ -32,6 +35,7 @@ const ROTATION_RIGHT_MAP: Record<Direction, Direction> = {
 class Rover extends BaseEntity<RoverProps> {
   constructor(id: string, props: RoverProps) {
     super(props, id);
+    this.validateRoverInitialPosition();
   }
 
   public get position(): Position {
@@ -50,20 +54,56 @@ class Rover extends BaseEntity<RoverProps> {
     }
   }
 
-  public move(): void {
+  // Get the next position (simulation) of the rover based on the current direction
+  public getNextPositionSimulation(): Position {
+    const nextPosition = { ...this.position };
+
     switch (this.direction) {
       case Direction.NORTH:
-        this.position.y += 1;
+        nextPosition.y += 1;
         break;
       case Direction.EAST:
-        this.position.x += 1;
+        nextPosition.x += 1;
         break;
       case Direction.SOUTH:
-        this.position.y -= 1;
+        nextPosition.y -= 1;
         break;
       case Direction.WEST:
-        this.position.x -= 1;
+        nextPosition.x -= 1;
         break;
+    }
+
+    return nextPosition;
+  }
+
+  public move(plateau?: Plateau): void {
+    const nextPosition = this.getNextPositionSimulation();
+
+    // If plateau is provided, validate the next position
+    if (plateau) {
+      if (!plateau.isPositionInsidePlateauBoundaries(nextPosition)) {
+        throw new InvalidCommandError(
+          `Rover ${this.id} cannot move to position (${nextPosition.x}, ${nextPosition.y}) - out of plateau bounds (0, 0) to (${plateau.maxX}, ${plateau.maxY})`
+        );
+      }
+
+      if (plateau.isPositionOccupiedByRover(nextPosition, this.id)) {
+        throw new InvalidCommandError(
+          `Rover ${this.id} cannot move to position (${nextPosition.x}, ${nextPosition.y}) - position is occupied by another rover`
+        );
+      }
+    }
+
+    this.props.position = nextPosition;
+  }
+
+  private validateRoverInitialPosition(): void {
+    if (!Number.isInteger(this.position.x) || !Number.isInteger(this.position.y)) {
+      throw new InvalidInitializationError("Rover initial position must be integers");
+    }
+
+    if (this.position.x < 0 || this.position.y < 0) {
+      throw new InvalidInitializationError("Rover initial position must be non-negative");
     }
   }
 
