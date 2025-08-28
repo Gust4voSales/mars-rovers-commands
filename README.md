@@ -7,7 +7,7 @@
   - [x] Check initial positions inside plateau
   - [x] Bounding box
   - [x] Other rovers (extra)
-- [ ] **3. Service parser that reads a string and parses it into commands and returns a plateau with rovers**
+- [x] **3. Service parser that reads a string and parses it into commands and returns a plateau with rovers**
 - [ ] **4. Infrastructure layer that reads a file and maps to rovers**
 - [ ] **5. Docker Build**
 - [ ] **6. Documentation**

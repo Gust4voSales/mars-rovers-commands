@@ -1,37 +1,25 @@
-import { Direction, Rover } from "./app/entities/rover";
+import { PlateauRoversParserUseCase } from "./app/use-cases/plateau-rovers-parser-use-case";
 
-const rover = new Rover("1", {
-  position: { x: 1, y: 2 },
-  direction: Direction.NORTH,
-});
+const input = `
+5 5
+1 2 N
+LMLMLMLMM 
+3 3 E
+MMRMMRMRRM
+`
 
-// LMLMLMLMM - Execute the command sequence
-rover.rotate("L");             // L
-rover.move();                  // M
-rover.rotate("L");             // L
-rover.move();                  // M
-rover.rotate("L");             // L
-rover.move();                  // M
-rover.rotate("L");             // L
-rover.move();                  // M
-rover.move();                  // M
+function main() {
+  try {
+    const parser = new PlateauRoversParserUseCase();
+    const { plateau } = parser.parse(input);
 
-const rover2 = new Rover("2", {
-  position: { x: 3, y: 3 },
-  direction: Direction.EAST,
-});
+    console.log(`Plateau: ${plateau.maxX} ${plateau.maxY}`);
+    for (const rover of plateau.rovers) {
+      console.log(`Rover ${rover.id} position: ${rover.position.x} ${rover.position.y} ${rover.direction}`);
+    }
+  } catch (error: any) {
+    console.log(`${error?.name || 'Error'}: ${error?.message || 'Unknown error'}`)
+  }
+}
 
-// MMRMMRMRRM - Execute the command sequence
-rover2.move();                  // M
-rover2.move();                  // M
-rover2.rotate("R");             // R
-rover2.move();                  // M
-rover2.move();                  // M
-rover2.rotate("R");             // R
-rover2.move();                  // M
-rover2.rotate("R");             // R
-rover2.rotate("R");             // R
-rover2.move();                  // M
-
-console.log(`Rover ${rover.id} position: ${rover.toString()}`);
-console.log(`Rover ${rover2.id} position: ${rover2.toString()}`);
+main()
